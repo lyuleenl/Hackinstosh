@@ -353,7 +353,35 @@ PciRoot(0x0)/Pci(0x1f,0x3)
 
 参考：[2.3 Config–DeviceProperties](https://blog.xjn819.com/post/opencore-guide.html)
 
+## 自动挂载EFI文件
+
+使用命令`diskutil list`找到EFI所在的分区
+
+![image.png](https://i.loli.net/2020/11/24/FlZaNjwgGMW3Oms.png)
+
+获取EFI分区UUID`sudo diskutil info disk0s1 | grep 'Partition UUID'`
+
+![diskutil info](https://i.loli.net/2020/11/24/xLbvwNAD9hMd5T1.png)
+
+F9399EFF-E7E7-42CB-A352-A285E6FC61FA
+
+打开系统自带的自动操作程序，依次点击应用程序 -> 选取 -> 运行 shell 脚本
+
+```
+#!/bin/bash
+
+mountEFI=$(echo '你的密码' | sudo -S diskutil info 你的UUID | grep 'Device Node')
+echo '你的密码' | sudo -S diskutil mount '/'${mountEFI#*/}
+open /Volumes/EFI/EFI/OC
+```
+
+将以上代码写入，保存即可
+![image.png](https://i.loli.net/2020/11/24/UTRn57Et3i4brLp.png)
+
+参考：https://www.bugprogrammer.me/2019/12/03/mountEFI.html
+
 ## Mac与Win的差异
+
 ### 引导方式
 - **Windows**
 
